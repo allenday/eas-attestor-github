@@ -391,8 +391,11 @@
         // Schema for validated domain identifier to Ethereum address attestation
         const ATTESTATION_SCHEMA_UID = "0xe5daad34f7c6c87eb60d2d32bde166ff4b87c8d165a95af58a93e774fc28c96e";
         
-        // Our known validator address
-        const KNOWN_VALIDATOR_ADDRESS = "0xCD57460f69Bc442BF4A6A90cD615BdE4232122DB";
+        // Our known validator addresses
+        const KNOWN_VALIDATOR_ADDRESSES = [
+            "0xCD57460f69Bc442BF4A6A90cD615BdE4232122DB",
+            "0x73e4bE27287889Da199745103D541E44E8F8E874"
+        ];
 
         async function connectWallet() {
             try {
@@ -546,7 +549,9 @@
                         proofUrl,
                         validator,
                         validatedAt: new Date(parseInt(validatedAt) * 1000),
-                        isValidValidator: validator.toLowerCase() === KNOWN_VALIDATOR_ADDRESS.toLowerCase()
+                        isValidValidator: KNOWN_VALIDATOR_ADDRESSES.some(addr => 
+                            validator.toLowerCase() === addr.toLowerCase()
+                        )
                     };
                 } catch (error) {
                     console.error('Failed to decode attestation:', attestation.id, error);
