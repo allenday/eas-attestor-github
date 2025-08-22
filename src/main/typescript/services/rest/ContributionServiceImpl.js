@@ -144,21 +144,67 @@ class ContributionServiceImpl {
 
     async processWebhook({ body }) {
         try {
-            const { action, repository, sender } = body;
+            const { action, repository, sender, pull_request, issue, review } = body;
             
             console.log('📨 Processing webhook:', action, repository?.full_name);
+
+            // Demonstrate different actor attribution based on event type
+            let contributorLogin = sender?.login;
+            let eventDescription = `${action} event`;
+            
+            // Handle different GitHub webhook event types with appropriate actor attribution
+            if (pull_request) {
+                if (action === 'opened') {
+                    contributorLogin = pull_request.user?.login; // PR author gets credit for opening
+                    eventDescription = `PR opened by ${contributorLogin}`;
+                } else if (action === 'closed' && pull_request.merged) {
+                    if (pull_request.merged_by) {
+                        // Could create separate contributions for PR author and merger
+                        contributorLogin = pull_request.user?.login; // PR author gets credit for merged PR
+                        const mergerLogin = pull_request.merged_by?.login;
+                        eventDescription = `PR merged: authored by ${contributorLogin}, merged by ${mergerLogin || '0x0'}`;
+                        
+                        // In a real implementation, you might create two attestations:
+                        // 1. PR author contribution (for getting their PR merged)
+                        // 2. Merger contribution (if merger has verified identity, otherwise 0x0)
+                    } else {
+                        contributorLogin = pull_request.user?.login;
+                        eventDescription = `PR merged by ${contributorLogin}`;
+                    }
+                }
+            } else if (issue) {
+                if (action === 'opened') {
+                    contributorLogin = issue.user?.login; // Issue reporter
+                    eventDescription = `Issue opened by ${contributorLogin}`;
+                } else if (action === 'closed') {
+                    if (issue.closed_by) {
+                        contributorLogin = issue.closed_by?.login; // Issue closer gets credit for resolution
+                        eventDescription = `Issue closed by ${contributorLogin}`;
+                    } else {
+                        contributorLogin = issue.user?.login;
+                        eventDescription = `Issue closed by ${contributorLogin}`;
+                    }
+                }
+            } else if (review) {
+                contributorLogin = review.user?.login; // Reviewer gets credit, not PR author
+                eventDescription = `Review ${review.state} by ${contributorLogin}`;
+            }
 
             // Generate mock contribution attestation
             const attestationUid = `0x${Math.random().toString(16).substr(2, 64)}`;
             
-            // Store contribution record
+            // Store contribution record with proper actor attribution
             this.contributions.push({
                 attestation_uid: attestationUid,
                 action,
                 repository: repository?.full_name,
-                sender: sender?.login,
+                contributor: contributorLogin, // The person who should receive credit
+                sender: sender?.login, // The person who triggered the webhook
+                event_description: eventDescription,
                 timestamp: Date.now()
             });
+
+            console.log(`✅ Attributed contribution: ${eventDescription}`);
 
             return {
                 processed: true,
