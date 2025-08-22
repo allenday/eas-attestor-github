@@ -10,7 +10,7 @@ jest.mock('ethers', () => ({
       getNetwork: jest.fn().mockResolvedValue({ chainId: 84532 })
     })),
     Wallet: jest.fn().mockImplementation(() => ({
-      address: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D',
+      address: process.env.DEPLOY_CLOUD_STAGING_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890',
       connect: jest.fn()
     })),
     Contract: jest.fn().mockImplementation(() => ({
@@ -36,13 +36,13 @@ jest.mock('../../../main/typescript/utils/SchemaConverter.js', () => {
           uid: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
           name: 'identity',
           definition: 'string domain,string identifier,address ethereumAddress,string proofUrl,address validator,bytes validationSignature',
-          description: 'GitHub identity attestation'
+          description: 'Domain identity verification'
         },
         'repository-registration': {
           uid: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab',
           name: 'repository-registration',
-          definition: 'string domain,string path,address registrant,string branchName,address validator,bytes validationSignature',
-          description: 'GitHub repository registration'
+          definition: 'string domain,string path,address registrant,bytes registrantSignature,string proofUrl,address validator,bytes validationSignature',
+          description: 'Repository registration for contribution monitoring'
         },
         'issue-contribution': {
           uid: '0x9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba',
@@ -117,7 +117,7 @@ describe('AttestService Tests', () => {
       const mockCall = {
         request: {
           schema_uid: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
-          recipient: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D',
+          recipient: process.env.DEPLOY_CLOUD_STAGING_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890',
           expiration_time: 0,
           revocable: true,
           data: '0xabcdef1234567890'
@@ -162,7 +162,7 @@ describe('AttestService Tests', () => {
       const mockCall = {
         request: {
           schema_uid: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
-          recipient: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D',
+          recipient: process.env.DEPLOY_CLOUD_STAGING_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890',
           data: '0xabcdef1234567890'
         }
       };
@@ -227,7 +227,7 @@ describe('AttestService Tests', () => {
       expect(mockContract.attest).toHaveBeenCalledWith({
         schema: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
         data: {
-          recipient: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D', // wallet address
+          recipient: process.env.DEPLOY_CLOUD_STAGING_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890', // wallet address
           expirationTime: 0,
           revocable: true,
           refUID: '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -313,8 +313,8 @@ describe('AttestService Tests', () => {
           {
             schema_uid: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab',
             name: 'repository-registration',
-            definition: 'string domain,string path,address registrant,string branchName,address validator,bytes validationSignature',
-            description: 'GitHub repository registration'
+            definition: 'string domain,string path,address registrant,bytes registrantSignature,string proofUrl,address validator,bytes validationSignature',
+            description: 'Repository registration for contribution monitoring'
           },
           {
             schema_uid: '0x9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba',
@@ -405,7 +405,7 @@ describe('AttestService Tests', () => {
       const data = {
         domain: 'github.com',
         identifier: 'testuser',
-        ethereumAddress: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D'
+        ethereumAddress: process.env.DEPLOY_CLOUD_STAGING_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890'
       };
 
       const result = attestService.encodeSchemaData(schemaKey, data);
@@ -423,7 +423,7 @@ describe('AttestService Tests', () => {
         domain: 'github.com',
         identifier: 'testuser'
       };
-      const recipient = '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D';
+      const recipient = process.env.DEPLOY_CLOUD_STAGING_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890';
       const options = { revocable: false };
 
       const result = attestService.createAttestationRequest(schemaKey, data, recipient, options);
@@ -436,7 +436,7 @@ describe('AttestService Tests', () => {
       );
       expect(result).toEqual({
         schema_uid: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
-        recipient: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D',
+        recipient: process.env.DEPLOY_CLOUD_STAGING_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890',
         expiration_time: 0,
         revocable: true,
         data: '0xabcdef1234567890'

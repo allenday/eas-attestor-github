@@ -272,8 +272,8 @@ describe('SignService Tests', () => {
     it('should generate webhook secret successfully', async () => {
       const mockCall = {
         request: {
-          repository_full_name: 'owner/repo',
-          registrant_signature: '0xregistrantsig123'
+          repositoryFullName: 'owner/repo',
+          registrantSignature: '0xregistrantsig123'
         }
       };
 
@@ -285,7 +285,7 @@ describe('SignService Tests', () => {
       
       expect(mockCallback).toHaveBeenCalledWith(null, {
         webhook_secret: '0x' + '2'.repeat(64),
-        repository_full_name: 'owner/repo',
+        repositoryFullName: 'owner/repo',
         validator_address: '0x1234567890123456789012345678901234567890'
       });
     });
@@ -293,8 +293,8 @@ describe('SignService Tests', () => {
     it('should handle missing parameters', async () => {
       const mockCall = {
         request: {
-          repository_full_name: 'owner/repo'
-          // missing registrant_signature
+          repositoryFullName: 'owner/repo'
+          // missing registrantSignature
         }
       };
 
@@ -313,8 +313,8 @@ describe('SignService Tests', () => {
       
       const mockCall = {
         request: {
-          repository_full_name: 'owner/repo',
-          registrant_signature: '0xregistrantsig123'
+          repositoryFullName: 'owner/repo',
+          registrantSignature: '0xregistrantsig123'
         }
       };
 
@@ -446,8 +446,8 @@ describe('SignService Tests', () => {
     it('should generate same webhook secret for same inputs', async () => {
       const mockCall = {
         request: {
-          repository_full_name: 'owner/repo',
-          registrant_signature: '0xsignature123'
+          repositoryFullName: 'owner/repo',
+          registrantSignature: '0xsignature123'
         }
       };
 

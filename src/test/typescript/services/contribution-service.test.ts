@@ -115,7 +115,7 @@ describe('ContributionService Tests', () => {
       const mockCall = {
         request: {
           repository_path: 'owner/repo',
-          registrant_signature: signature
+          registrantSignature: signature
         }
       };
 
@@ -133,7 +133,7 @@ describe('ContributionService Tests', () => {
       const mockCall = {
         request: {
           repository_path: 'owner/repo'
-          // missing registrant_signature
+          // missing registrantSignature
         }
       };
 
@@ -152,7 +152,7 @@ describe('ContributionService Tests', () => {
     it('should validate existing branch successfully', async () => {
       const { ethers } = require('ethers');
       const signature = '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12';
-      const registrantAddress = '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D';
+      const registrantAddress = 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890'';
       
       // Mock signature verification to return the registrant address
       ethers.verifyMessage.mockReturnValue(registrantAddress);
@@ -172,7 +172,7 @@ describe('ContributionService Tests', () => {
         request: {
           repository_path: 'owner/repo',
           registrant_address: registrantAddress,
-          registrant_signature: signature
+          registrantSignature: signature
         }
       };
 
@@ -202,7 +202,7 @@ describe('ContributionService Tests', () => {
     it('should handle signature verification failure', async () => {
       const { ethers } = require('ethers');
       const signature = '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12';
-      const registrantAddress = '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D';
+      const registrantAddress = 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890'';
       const wrongAddress = '0x9999999999999999999999999999999999999999';
       
       // Mock signature verification to return wrong address
@@ -212,7 +212,7 @@ describe('ContributionService Tests', () => {
         request: {
           repository_path: 'owner/repo',
           registrant_address: registrantAddress,
-          registrant_signature: signature
+          registrantSignature: signature
         }
       };
 
@@ -229,7 +229,7 @@ describe('ContributionService Tests', () => {
     it('should handle branch not found (404)', async () => {
       const { ethers } = require('ethers');
       const signature = '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12';
-      const registrantAddress = '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D';
+      const registrantAddress = 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890'';
       
       ethers.verifyMessage.mockReturnValue(registrantAddress);
 
@@ -242,7 +242,7 @@ describe('ContributionService Tests', () => {
         request: {
           repository_path: 'owner/repo',
           registrant_address: registrantAddress,
-          registrant_signature: signature
+          registrantSignature: signature
         }
       };
 
@@ -260,8 +260,8 @@ describe('ContributionService Tests', () => {
       const mockCall = {
         request: {
           repository_path: 'invalid-path',
-          registrant_address: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D',
-          registrant_signature: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12'
+          registrant_address: 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890'',
+          registrantSignature: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12'
         }
       };
 
@@ -278,7 +278,7 @@ describe('ContributionService Tests', () => {
     it('should handle GitHub API rate limit', async () => {
       const { ethers } = require('ethers');
       const signature = '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12';
-      const registrantAddress = '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D';
+      const registrantAddress = 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890'';
       
       ethers.verifyMessage.mockReturnValue(registrantAddress);
 
@@ -291,7 +291,7 @@ describe('ContributionService Tests', () => {
         request: {
           repository_path: 'owner/repo',
           registrant_address: registrantAddress,
-          registrant_signature: signature
+          registrantSignature: signature
         }
       };
 
@@ -309,7 +309,7 @@ describe('ContributionService Tests', () => {
       const mockCall = {
         request: {
           repository_path: 'owner/repo'
-          // missing registrant_address and registrant_signature
+          // missing registrant_address and registrantSignature
         }
       };
 
@@ -326,7 +326,7 @@ describe('ContributionService Tests', () => {
     it('should handle network errors', async () => {
       const { ethers } = require('ethers');
       const signature = '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12';
-      const registrantAddress = '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D';
+      const registrantAddress = 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890'';
       
       ethers.verifyMessage.mockReturnValue(registrantAddress);
 
@@ -336,7 +336,7 @@ describe('ContributionService Tests', () => {
         request: {
           repository_path: 'owner/repo',
           registrant_address: registrantAddress,
-          registrant_signature: signature
+          registrantSignature: signature
         }
       };
 
@@ -354,7 +354,7 @@ describe('ContributionService Tests', () => {
   describe('ValidateGist Method', () => {
     it('should validate gist successfully', async () => {
       const { ethers } = require('ethers');
-      ethers.verifyMessage.mockReturnValue('0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D');
+      ethers.verifyMessage.mockReturnValue('process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890'');
 
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -364,8 +364,8 @@ describe('ContributionService Tests', () => {
           files: {
             'verification.json': {
               content: JSON.stringify({
-                github_username: 'testuser',
-                address: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D',
+                identifier: 'testuser',
+                address: 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890'',
                 signature: '0xsignature123',
                 message: 'Verify GitHub identity for EAS'
               })
@@ -376,9 +376,9 @@ describe('ContributionService Tests', () => {
 
       const mockCall = {
         request: {
-          github_username: 'testuser',
-          gist_url: 'https://gist.github.com/testuser/abc123',
-          ethereum_address: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D'
+          identifier: 'testuser',
+          proofUrl: 'https://gist.github.com/testuser/abc123',
+          ethereumAddress: 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890''
         }
       };
 
@@ -414,9 +414,9 @@ describe('ContributionService Tests', () => {
 
       const mockCall = {
         request: {
-          github_username: 'testuser',
-          gist_url: 'https://gist.github.com/testuser/abc123',
-          ethereum_address: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D'
+          identifier: 'testuser',
+          proofUrl: 'https://gist.github.com/testuser/abc123',
+          ethereumAddress: 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890''
         }
       };
 
@@ -433,9 +433,9 @@ describe('ContributionService Tests', () => {
     it('should handle invalid gist URL', async () => {
       const mockCall = {
         request: {
-          github_username: 'testuser',
-          gist_url: 'invalid-url',
-          ethereum_address: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D'
+          identifier: 'testuser',
+          proofUrl: 'invalid-url',
+          ethereumAddress: 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890''
         }
       };
 
@@ -461,8 +461,8 @@ describe('ContributionService Tests', () => {
           files: {
             'verification.json': {
               content: JSON.stringify({
-                github_username: 'testuser',
-                address: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D',
+                identifier: 'testuser',
+                address: 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890'',
                 signature: '0xbadsignature',
                 message: 'Verify GitHub identity for EAS'
               })
@@ -473,9 +473,9 @@ describe('ContributionService Tests', () => {
 
       const mockCall = {
         request: {
-          github_username: 'testuser',
-          gist_url: 'https://gist.github.com/testuser/abc123',
-          ethereum_address: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D'
+          identifier: 'testuser',
+          proofUrl: 'https://gist.github.com/testuser/abc123',
+          ethereumAddress: 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890''
         }
       };
 
@@ -535,9 +535,9 @@ describe('ContributionService Tests', () => {
 
       const mockCall = {
         request: {
-          github_username: 'testuser',
-          gist_url: 'https://gist.github.com/testuser/abc123',
-          ethereum_address: '0x742d35Cc6e1B3F2C89c98A4D3bCF8D6D2B6D3D3D'
+          identifier: 'testuser',
+          proofUrl: 'https://gist.github.com/testuser/abc123',
+          ethereumAddress: 'process.env.TEST_VALIDATOR_ADDRESS || '0x1234567890123456789012345678901234567890''
         }
       };
 
