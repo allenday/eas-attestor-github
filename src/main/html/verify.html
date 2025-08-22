@@ -373,7 +373,7 @@
                 const proofUrl = decodedData.find(item => item.name === 'proofUrl')?.value?.value || 'unknown';
                 const validationSignature = decodedData.find(item => item.name === 'validationSignature')?.value?.value || '0x';
                 const ethereumAddress = decodedData.find(item => item.name === 'ethereumAddress')?.value?.value || 'Unknown';
-                const validator = decodedData.find(item => item.name === 'validator')?.value?.value || '0x0';
+                const validator = decodedData.find(item => item.name === 'validator')?.value?.value || (() => { throw new Error('CRITICAL: Validator address missing from attestation data'); })();
 
                 // Check if validator matches our known validator
                 const isValidValidator = validator.toLowerCase() === KNOWN_VALIDATOR_ADDRESS.toLowerCase();

@@ -46,3 +46,4 @@ Thumbs.db
 logs/
 hackathon/src/generated/
 src/generated/
+.env

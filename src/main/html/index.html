@@ -522,7 +522,7 @@
                     const domain = decodedData.find(item => item.name === 'domain')?.value?.value || 'unknown';
                     const identifier = decodedData.find(item => item.name === 'identifier')?.value?.value || 'unknown';
                     const proofUrl = decodedData.find(item => item.name === 'proofUrl')?.value?.value || '';
-                    const validator = decodedData.find(item => item.name === 'validator')?.value?.value || '0x0';
+                    const validator = decodedData.find(item => item.name === 'validator')?.value?.value || (() => { throw new Error('CRITICAL: Validator address missing from attestation data'); })();
                     const ethereumAddress = decodedData.find(item => item.name === 'ethereumAddress')?.value?.value || 'Unknown';
 
                     return {
