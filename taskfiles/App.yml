@@ -64,6 +64,12 @@ tasks:
       - node scripts/task/app/fix-all-controller-exports.cjs
       - echo "📦 Installing server dependencies..."
       - node scripts/task/app/install-server-deps.cjs
+      - echo "🔧 Copying validator .env to server directory..."
+      - cp src/main/typescript/validator/.env src/generated/server/.env
+      - echo "📦 Installing EAS SDK in server directory..."
+      - cd src/generated/server && npm install @ethereum-attestation-service/eas-sdk dotenv
+      - echo "🔧 Adding dotenv to server entry point..."
+      - node scripts/task/app/add-dotenv-to-server.cjs
       - echo "✅ Express server generated and wired"
     sources:
       - src/generated/openapi/**/*.json
@@ -209,6 +215,18 @@ tasks:
       - echo "📄 Check webhook processing logs at /tmp/validator.log"
       - echo "🔍 Showing recent webhook events:"
       - tail -10 /tmp/validator.log || echo "No webhook logs found"
+
+  cli:register-repo:
+    desc: Interactive CLI tool for repository registration with EAS attestation
+    cmds:
+      - echo "🚀 Starting repository registration CLI..."
+      - node scripts/task/app/register-repo.cjs
+
+  cli:register-identity:
+    desc: Interactive CLI tool for identity registration with EAS attestation
+    cmds:
+      - echo "🚀 Starting identity registration CLI..."
+      - node scripts/task/app/register-identity.cjs
 
 
   # Development tasks
@@ -386,6 +404,7 @@ tasks:
     desc: Clean build artifacts
     cmds:
       - rm -rf {{.BUILD_DIR}}
+      - rm -rf src/generated
 
   # Health check tasks
   doctor:

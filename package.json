@@ -13,7 +13,8 @@
     "test:watch": "jest --config jest.config.cjs --watch",
     "test:coverage": "jest --config jest.config.cjs --coverage",
     "lint:fix": "eslint src --ext .ts --fix",
-    "format:check": "prettier --check 'src/**/*.ts'"
+    "format:check": "prettier --check 'src/**/*.ts'",
+    "register-repo": "node scripts/task/app/register-repo.cjs"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@ethereum-attestation-service/eas-sdk": "^2.9.1-beta.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "ethers": "^6.15.0",
