@@ -35,8 +35,8 @@ window.EAS_CONFIG = {
     
     // Schema UIDs loaded dynamically from deployment configs
     
-    // Our known validator address
-    validatorAddress: "0xcc084f7a8d127c5f56c6293852609c9fee7b27ed",
+    // Our known validator address (properly checksummed)
+    validatorAddress: "0xcc084F7A8d127C5F56C6293852609c9feE7b27eD",
     
     // API endpoints
     api: {
