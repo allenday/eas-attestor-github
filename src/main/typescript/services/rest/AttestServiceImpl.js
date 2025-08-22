@@ -4,27 +4,36 @@
  */
 
 const Service = require('./Service');
+const fs = require('fs');
+const path = require('path');
 
 class AttestServiceImpl {
     constructor() {
-        // Mock schema data
-        this.schemas = {
-            "repository-registration": {
-                name: "Repository Registration",
-                definition: "string repository_full_name,string registrant_signature,address registrant",
-                description: "Schema for registering repositories with the attestation service"
-            },
-            "identity": {
-                name: "Identity Registration", 
-                definition: "string github_username,string gist_url,address ethereum_address,string validation_signature",
-                description: "Schema for linking GitHub identities to Ethereum addresses"
-            },
-            "contribution": {
-                name: "Contribution Record",
-                definition: "string contribution_type,string repository,string github_username,string contribution_hash,uint64 timestamp",
-                description: "Schema for recording GitHub contributions"
-            }
-        };
+        // Load schema data from JSON file
+        this.schemas = this.loadSchemas();
+    }
+
+    loadSchemas() {
+        try {
+            const schemaPath = path.join(__dirname, '../../json/attestor/v1/attestor.json');
+            const schemaData = JSON.parse(fs.readFileSync(schemaPath, 'utf8'));
+            return schemaData.schemas;
+        } catch (error) {
+            console.error('❌ Failed to load schemas:', error.message);
+            // Fallback to schema-compliant definitions
+            return {
+                "identity": {
+                    name: "Identity",
+                    definition: "string domain,string identifier,address ethereumAddress,string proofUrl,address validator,bytes validationSignature",
+                    description: "Domain identity verification"
+                },
+                "repository-registration": {
+                    name: "RepositoryRegistration",
+                    definition: "string domain,string path,address registrant,bytes registrantSignature,string proofUrl,address validator,bytes validationSignature",
+                    description: "Repository registration for contribution monitoring"
+                }
+            };
+        }
     }
 
     async createAttestation({ body }) {
@@ -45,7 +54,9 @@ class AttestServiceImpl {
             return {
                 attestation_uid: mockAttestationUid,
                 transaction_hash: mockTxHash,
-                attester: "0x742d35Cc6634C0532925a3b8D62F1C9134F7e1be"
+                attester: ethers.getAddress(process.env.DEPLOY_CLOUD_STAGING_VALIDATOR_ADDRESS || 
+                                          process.env.DEPLOY_CLOUD_PROD_VALIDATOR_ADDRESS || 
+                                          '0x0000000000000000000000000000000000000000')
             };
 
         } catch (error) {

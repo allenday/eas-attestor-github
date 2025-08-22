@@ -117,9 +117,14 @@ class SignServiceImpl {
             let errorMessage = null;
 
             if (expected_signer) {
-                isValid = recoveredAddress.toLowerCase() === expected_signer.toLowerCase();
-                if (!isValid) {
-                    errorMessage = `Signature mismatch: expected ${expected_signer}, got ${recoveredAddress}`;
+                try {
+                    isValid = ethers.getAddress(recoveredAddress) === ethers.getAddress(expected_signer);
+                    if (!isValid) {
+                        errorMessage = `Signature mismatch: expected ${ethers.getAddress(expected_signer)}, got ${ethers.getAddress(recoveredAddress)}`;
+                    }
+                } catch (error) {
+                    isValid = false;
+                    errorMessage = `Invalid address format: ${error.message}`;
                 }
             }
 
