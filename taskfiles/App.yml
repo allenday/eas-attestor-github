@@ -160,6 +160,56 @@ tasks:
       - ./scripts/task/app/validator-stop.sh
       - echo "✅ Server integration tests complete!"
 
+  test:webhook:live:
+    desc: Test webhooks with live GitHub events (creates test repo and events)
+    vars:
+      TEST_REPO: allenday/test-repo-attestor
+      WEBHOOK_PORT: 6001
+    cmds:
+      - echo "🔧 Setting up live GitHub webhook testing..."
+      - echo "📦 Installing GitHub CLI webhook extension..."
+      - gh extension install cli/gh-webhook || echo "Extension already installed"
+      - echo "Creating test repository {{.TEST_REPO}}"
+      - gh repo create {{.TEST_REPO}} --public --description="Test repository for webhook attestation testing" --clone=false || echo "Repository already exists, using existing repo"
+      - echo "Adding initial content to repository"
+      - echo "Testing" | gh api repos/{{.TEST_REPO}}/contents/README.md -X PUT -f message="Add README" -f content="$(echo 'Webhook Testing Repository' | base64)" || echo "README may already exist"
+      - echo "🚀 Starting validator service for webhook testing..."
+      - ./scripts/task/app/validator-bg.sh {{.WEBHOOK_PORT}}
+      - echo "🔗 Starting GitHub webhook forwarding in background..."
+      - gh webhook forward --events=issues,pull_request,pull_request_review --repo={{.TEST_REPO}} --url="http://localhost:{{.WEBHOOK_PORT}}/v1/webhook" > /tmp/webhook-forward.log 2>&1 &
+      - echo "⏳ Waiting for webhook forwarding to establish..."
+      - sleep 5
+      - echo "🧪 Creating test events..."
+      - task: test:webhook:create-events
+      - echo "⏳ Waiting for webhooks to process..."
+      - sleep 5
+      - echo "🛑 Stopping services..."
+      - ./scripts/task/app/validator-stop.sh
+      - echo "🧹 Test repository cleanup (requires delete_repo scope)..."
+      - echo "Run 'gh auth refresh -h github.com -s delete_repo' to enable automatic cleanup"
+      - echo "✅ Live webhook testing complete!"
+
+  test:webhook:create-events:
+    desc: Create test GitHub events for webhook testing
+    internal: true
+    vars:
+      TEST_REPO: allenday/test-repo-attestor
+    cmds:
+      - echo "📝 Creating test issue..."
+      - gh issue create --repo={{.TEST_REPO}} --title="Webhook Test Issue $(date +%s)" --body="This issue tests webhook processing for issue events. Created at $(date)."
+      - sleep 2
+      - echo "📝 Creating another test issue..."
+      - |
+        ISSUE_URL=$(gh issue create --repo={{.TEST_REPO}} --title="Test Issue for Closing $(date +%s)" --body="This issue will be closed to test issue close webhooks.")
+        ISSUE_NUMBER=$(echo $ISSUE_URL | grep -o '[0-9]*$')
+        sleep 2
+        echo "Closing test issue #$ISSUE_NUMBER"
+        gh issue close $ISSUE_NUMBER --repo={{.TEST_REPO}} --comment="Closing issue to test webhook processing"
+      - echo "📊 Webhook test events created successfully!"
+      - echo "📄 Check webhook processing logs at /tmp/validator.log"
+      - echo "🔍 Showing recent webhook events:"
+      - tail -10 /tmp/validator.log || echo "No webhook logs found"
+
 
   # Development tasks
   dev:
