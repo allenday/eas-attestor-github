@@ -20,10 +20,11 @@ message Repository {
 message Identity {
   Domain domain = 1;              // Points to domain
   string identifier = 2;          // username on that domain
-  string ethereum_address = 3;    // 0x...
+  string registrant = 3;          // Ethereum address of the registrant (who signs payload)
   string proof_url = 4;           // Verification proof URL (e.g., gist URL)
   string validator = 5;           // Ethereum address of the validator
-  bytes validation_signature = 6;       // Cryptographic signature validating the identity
+  bytes registrant_signature = 6;       // Registrant's signature of the payload
+  bytes validator_signature = 7;        // Validator's cryptographic signature validating the identity
 }
 
 // Issue-related events
@@ -91,10 +92,10 @@ message ReviewContribution {
 message RepositoryRegistration {
   Repository repository = 1;       // The repository to monitor
   Identity registrant = 2;         // Identity of the registrant (GitHub user -> ETH address)
-  bytes registrant_signature = 3;  // Signature of "owner/repo" by registrant
-  string proof_url = 4;            // GitHub issue URL proving repository ownership
-  string validator = 5;            // Ethereum address of the validator
-  bytes validation_signature = 6;        // Cryptographic signature validating the repository ownership
+  string proof_url = 3;            // GitHub issue URL proving repository ownership
+  string validator = 4;            // Ethereum address of the validator
+  bytes registrant_signature = 5;  // Signature of "owner/repo" by registrant
+  bytes validator_signature = 6;   // Cryptographic signature validating the repository ownership
   // Note: webhook_secret derived as keccak256(repository.full_name + registrant_signature + validator_private_key)
 }
 

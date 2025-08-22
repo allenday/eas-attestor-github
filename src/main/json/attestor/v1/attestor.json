@@ -4,12 +4,12 @@
   "schemas": {
     "identity": {
       "name": "Identity",
-      "definition": "string domain,string identifier,address ethereumAddress,string proofUrl,address validator,bytes validationSignature",
+      "definition": "string domain,string identifier,address registrant,string proofUrl,address validator,bytes registrantSignature,bytes validatorSignature",
       "description": "Domain identity verification"
     },
     "repository-registration": {
       "name": "RepositoryRegistration", 
-      "definition": "string domain,string path,address registrant,bytes registrantSignature,string proofUrl,address validator,bytes validationSignature",
+      "definition": "string domain,string path,address registrant,bytes registrantSignature,string proofUrl,address validator,bytes validatorSignature",
       "description": "Repository registration for contribution monitoring"
     },
     "issue-contribution": {

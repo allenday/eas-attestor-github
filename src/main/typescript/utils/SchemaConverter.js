@@ -501,10 +501,10 @@ class SchemaConverter {
         return {
             schema: schemaUID,
             data: {
-                recipient: recipient || '0x0000000000000000000000000000000000000000',
+                recipient: recipient || (() => { throw new Error('CRITICAL: Recipient address required for attestation - cannot use zero address'); })(),
                 expirationTime: options.expirationTime || 0,
                 revocable: options.revocable !== false, // Default to true
-                refUID: options.refUID || '0x0000000000000000000000000000000000000000000000000000000000000000',
+                refUID: options.refUID || (() => { throw new Error('CRITICAL: RefUID must be explicitly provided - cannot use zero UID fallback'); })(),
                 data: encodedData,
                 value: options.value || 0
             }
